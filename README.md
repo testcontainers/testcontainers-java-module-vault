@@ -4,17 +4,17 @@ Testcontainers module for [Vault](https://github.com/hashicorp/vault). Vault is 
 
 See [testcontainers.org](https://www.testcontainers.org) for more information about Testcontainers.
 
-<!--[![Build Status](https://travis-ci.org/testcontainers/testcontainers-java.svg?branch=master)](https://travis-ci.org/testcontainers/testcontainers-java)-->
+<!--[![Build Status](https://travis-ci.org/testcontainers/testcontainers-java-module-vault.svg?branch=master)](https://travis-ci.org/testcontainers/testcontainers-java-module-vault)-->
 
 ## Usage example
 
-Running Vault in your Junit tests is easily done with an @TestRule such as the following:
+Running Vault in your Junit tests is easily done with an @Rule or @ClassRule such as the following:
 
 ```java
 public class SomeTest {
 
     @ClassRule
-    public static VaultContainer vaultContainer = new VaultContainer<>("vault:0.7.0")
+    public static VaultContainer vaultContainer = new VaultContainer<>()
             .withVaultToken("my-root-token")
             .withVaultPort(8200)
             .withSecretInVault("secret/testing", "top_secret=password1","db_password=dbpassword1");

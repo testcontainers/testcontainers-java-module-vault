@@ -2,6 +2,7 @@ package org.testcontainers.vault;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.traits.LinkableContainer;
+import org.testcontainers.shaded.com.github.dockerjava.api.command.InspectContainerResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.testcontainers.shaded.com.github.dockerjava.api.model.Capability.IPC_LOCK;
 
@@ -22,8 +22,6 @@ import static org.testcontainers.shaded.com.github.dockerjava.api.model.Capabili
  */
 public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericContainer<SELF>
         implements LinkableContainer {
-
-    private boolean preloadSecret = false;
 
     private boolean vaultPortRequested = false;
 
@@ -48,32 +46,28 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
     }
 
     @Override
-    protected void waitUntilContainerStarted() {
-        getWaitStrategy().waitUntilReady(this);
-
-        //add secret to vault
-        if (isPreloadSecret()) {
-            addSecrets();
-        }
+    protected void containerIsStarted(InspectContainerResponse containerInfo) {
+        addSecrets();
     }
 
     private void addSecrets() {
-        secretsMap.forEach((path, secrets) -> {
+        if(!secretsMap.isEmpty()){
             try {
-                this.execInContainer(getExecCommand(path, secrets)).getStdout().contains("Success");
+                this.execInContainer(buildExecCommand(secretsMap)).getStdout().contains("Success");
             }
             catch (IOException | InterruptedException e) {
                 logger().error("Failed to add these secrets {} into Vault via exec command. Exception message: {}", secretsMap, e.getMessage());
             }
-        });
+        }
     }
 
-    private String[] getExecCommand(String path, List<String> list) {
-        list.add(0, "vault");
-        list.add(1, "write");
-        list.add(2, path);
-        String[] array = list.toArray(new String[list.size()]);
-        return array;
+    private String[] buildExecCommand(Map<String, List<String>> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+        map.forEach((path, secrets) -> {
+            stringBuilder.append(" && vault write " + path);
+            secrets.forEach(item -> stringBuilder.append(" "+item));
+        });
+        return new String[] { "/bin/sh", "-c", stringBuilder.toString().substring(4)};
     }
 
     /**
@@ -108,29 +102,20 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
      * @return this
      */
     public SELF withSecretInVault(String path, String firstSecret, String... remainingSecrets) {
-        setPreloadSecret(true);
         List<String> list = new ArrayList<>();
         list.add(firstSecret);
-        Stream.of(remainingSecrets).forEach(s -> list.add(s));
+        for(String secret : remainingSecrets) {
+            list.add(secret);
+        }
         if (secretsMap.containsKey(path)) {
-            list.forEach(s -> secretsMap.get(path).add(s));
+            list.addAll(list);
         }
-        else {
-            secretsMap.put(path, list);
-        }
+        secretsMap.putIfAbsent(path,list);
         return self();
-    }
-
-    private void setPreloadSecret(boolean preloadSecret) {
-        this.preloadSecret = preloadSecret;
     }
 
     private void setVaultPortRequested(boolean vaultPortRequested) {
         this.vaultPortRequested = vaultPortRequested;
-    }
-
-    private boolean isPreloadSecret() {
-        return preloadSecret;
     }
 
     private boolean isVaultPortRequested() {
