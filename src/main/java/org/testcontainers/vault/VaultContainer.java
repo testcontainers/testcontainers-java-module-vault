@@ -97,7 +97,7 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
      * that is specified. Thus this can be called more than once for multiple paths to be added to Vault.
      *
      * The secrets are added to vault directly after the container is up via the
-     * {@link #addSecrets() addSecrets}, called from {@link #waitUntilContainerStarted() waitUntilContainerStarted}.
+     * {@link #addSecrets() addSecrets}, called from {@link #containerIsStarted(InspectContainerResponse)() containerIsStarted}.
      *
      * @return this
      */
