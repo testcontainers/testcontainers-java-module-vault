@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
  */
 public class VaultContainerTest {
 
-    private static final int VAULT_PORT = 8200;
+    private static final int VAULT_PORT = 8201; //using non-default port to show other ports can be passed besides 8200
 
     private static final String VAULT_TOKEN = "my-root-token";
 
@@ -74,6 +74,6 @@ public class VaultContainerTest {
     }
 
     private String getHostAndPort(){
-        return vaultContainer.getContainerIpAddress()+":"+vaultContainer.getMappedPort(VAULT_PORT);
+        return vaultContainer.getContainerIpAddress()+":"+vaultContainer.getMappedPort(8200);
     }
 }

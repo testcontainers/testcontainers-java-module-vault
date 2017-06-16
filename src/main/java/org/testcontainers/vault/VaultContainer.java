@@ -87,8 +87,8 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
     public SELF withVaultPort(int port){
         setVaultPortRequested(true);
         String vaultPort = String.valueOf(port);
-        withEnv("VAULT_ADDR", "http://0.0.0.0:"+vaultPort);
-        setPortBindings(Arrays.asList(vaultPort+":"+vaultPort));
+        withEnv("VAULT_ADDR", "http://0.0.0.0:8200");
+        setPortBindings(Arrays.asList(vaultPort+":8200"));
         return self();
     }
 
