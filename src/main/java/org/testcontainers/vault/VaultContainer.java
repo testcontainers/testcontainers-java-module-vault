@@ -23,6 +23,8 @@ import static org.testcontainers.shaded.com.github.dockerjava.api.model.Capabili
 public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericContainer<SELF>
         implements LinkableContainer {
 
+    private static final String VAULT_PORT="8200";
+
     private boolean vaultPortRequested = false;
 
     private Map<String, List<String>> secretsMap = new HashMap<>();
@@ -40,8 +42,8 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
         setStartupAttempts(3);
         withCreateContainerCmdModifier(cmd -> cmd.withCapAdd(IPC_LOCK));
         if(!isVaultPortRequested()){
-            withEnv("VAULT_ADDR", "http://0.0.0.0:8200");
-            setPortBindings(Arrays.asList("8200:8200"));
+            withEnv("VAULT_ADDR", "http://0.0.0.0:"+VAULT_PORT);
+            setPortBindings(Arrays.asList(VAULT_PORT+":"+VAULT_PORT));
         }
     }
 
@@ -72,6 +74,8 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
 
     /**
      * Sets the Vault root token for the container so application tests can source secrets using the token
+     *
+     * @param token the root token value to set for Vault.
      * @return this
      */
     public SELF withVaultToken(String token) {
@@ -82,13 +86,15 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
 
     /**
      * Sets the Vault port in the container as well as the port bindings for the host to reach the container over HTTP.
+     *
+     * @param port the port number you want to have the Vault container listen on for tests.
      * @return this
      */
     public SELF withVaultPort(int port){
         setVaultPortRequested(true);
         String vaultPort = String.valueOf(port);
-        withEnv("VAULT_ADDR", "http://0.0.0.0:8200");
-        setPortBindings(Arrays.asList(vaultPort+":8200"));
+        withEnv("VAULT_ADDR", "http://0.0.0.0:"+VAULT_PORT);
+        setPortBindings(Arrays.asList(vaultPort+":"+VAULT_PORT));
         return self();
     }
 
@@ -97,8 +103,11 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
      * that is specified. Thus this can be called more than once for multiple paths to be added to Vault.
      *
      * The secrets are added to vault directly after the container is up via the
-     * {@link #addSecrets() addSecrets}, called from {@link #containerIsStarted(InspectContainerResponse)() containerIsStarted}.
+     * {@link #addSecrets() addSecrets}, called from {@link #containerIsStarted(InspectContainerResponse) containerIsStarted}
      *
+     * @param path specific Vault path to store specified secrets
+     * @param firstSecret first secret to add to specifed path
+     * @param remainingSecrets var args list of secrets to add to specified path
      * @return this
      */
     public SELF withSecretInVault(String path, String firstSecret, String... remainingSecrets) {
