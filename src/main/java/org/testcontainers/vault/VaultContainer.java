@@ -43,7 +43,6 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
         withCreateContainerCmdModifier(cmd -> cmd.withCapAdd(IPC_LOCK));
         if(!isVaultPortRequested()){
             withEnv("VAULT_ADDR", "http://0.0.0.0:"+VAULT_PORT);
-            setPortBindings(Arrays.asList(VAULT_PORT+":"+VAULT_PORT));
         }
     }
 
