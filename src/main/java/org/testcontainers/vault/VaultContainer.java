@@ -23,7 +23,7 @@ import static org.testcontainers.shaded.com.github.dockerjava.api.model.Capabili
 public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericContainer<SELF>
         implements LinkableContainer {
 
-    private static final String VAULT_PORT="8200";
+    private static final String VAULT_PORT = "8200";
 
     private boolean vaultPortRequested = false;
 
@@ -42,7 +42,7 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
         setStartupAttempts(3);
         withCreateContainerCmdModifier(cmd -> cmd.withCapAdd(IPC_LOCK));
         if(!isVaultPortRequested()){
-            withEnv("VAULT_ADDR", "http://0.0.0.0:"+VAULT_PORT);
+            withEnv("VAULT_ADDR", "http://0.0.0.0:" + VAULT_PORT);
         }
     }
 
@@ -66,7 +66,7 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
         StringBuilder stringBuilder = new StringBuilder();
         map.forEach((path, secrets) -> {
             stringBuilder.append(" && vault write " + path);
-            secrets.forEach(item -> stringBuilder.append(" "+item));
+            secrets.forEach(item -> stringBuilder.append(" " + item));
         });
         return new String[] { "/bin/sh", "-c", stringBuilder.toString().substring(4)};
     }
@@ -92,8 +92,8 @@ public class VaultContainer<SELF extends VaultContainer<SELF>> extends GenericCo
     public SELF withVaultPort(int port){
         setVaultPortRequested(true);
         String vaultPort = String.valueOf(port);
-        withEnv("VAULT_ADDR", "http://0.0.0.0:"+VAULT_PORT);
-        setPortBindings(Arrays.asList(vaultPort+":"+VAULT_PORT));
+        withEnv("VAULT_ADDR", "http://0.0.0.0:" + VAULT_PORT);
+        setPortBindings(Arrays.asList(vaultPort + ":" + VAULT_PORT));
         return self();
     }
 
