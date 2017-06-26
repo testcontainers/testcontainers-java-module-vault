@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>testcontainers-parent</artifactId>
+        <groupId>org.testcontainers</groupId>
+        <version>1.2.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>vault</artifactId>
+    <version>1.0.0</version>
+
+    <name>TestContainers :: Vault</name>
+    <description>
+        Vault container for testing under Testcontainers.
+    </description>
+    <url>https://github.com/testcontainers/testcontainers-java-module-vault</url>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>mikeoswald</id>
+            <name>Michael Oswald</name>
+            <email>michael.oswald@capitalone.com</email>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.9.4</version>
+                <configuration>
+                    <tag>${project.version}</tag>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <scm>
+        <connection>scm:git:https://github.com/testcontainers/testcontainers-java-module-vault.git</connection>
+        <developerConnection>scm:git:git@github.com:testcontainers/testcontainers-java-module-vault.git</developerConnection>
+        <url>https://github.com/testcontainers/testcontainers-java-module-vault</url>
+        <tag>HEAD</tag>
+    </scm>
+</project>
