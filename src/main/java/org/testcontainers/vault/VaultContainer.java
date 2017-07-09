@@ -1,8 +1,8 @@
 package org.testcontainers.vault;
 
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.traits.LinkableContainer;
-import org.testcontainers.shaded.com.github.dockerjava.api.command.InspectContainerResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.testcontainers.shaded.com.github.dockerjava.api.model.Capability.IPC_LOCK;
+import static com.github.dockerjava.api.model.Capability.IPC_LOCK;
+
 
 /**
  * GenericContainer subclass for Vault specific configuration and features. The main feature is the
