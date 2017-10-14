@@ -41,6 +41,24 @@ This can prove challenging in the development phase without a running Vault inst
 aims to solve your apps integration testing with Vault. You can also use it to
 test how your application behaves with Vault by writing different test scenarios in Junit.
 
+## Dependency information
+
+### Maven
+
+```
+<dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>vault</artifactId>
+    <version>1.4.3</version>
+</dependency>
+```
+
+### Gradle
+
+```
+compile group: 'org.testcontainers', name: 'vault', version: '1.4.3'
+```
+
 ## License
 
 See [LICENSE](LICENSE).
